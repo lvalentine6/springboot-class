@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
+// 회원 가입과 회원 목록을 제어하기 위한 컨트롤러
 @Controller
 public class MemberController {
     private final MemberService memberService;
