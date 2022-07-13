@@ -1,36 +1,35 @@
 package com.lecture.spring.springbootclass.service;
 
 import com.lecture.spring.springbootclass.domain.Member;
+import com.lecture.spring.springbootclass.repository.JdbcMemberRepository;
+import com.lecture.spring.springbootclass.repository.MemberRepository;
 import com.lecture.spring.springbootclass.repository.MemoryMemberRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
 
-// 단위 테스트(스프링과 DB 연동없이 최소 단위 테스트)
-class MemberServiceTest {
-    MemberService memberService;
-    MemoryMemberRepository memberRepository;
-    // DI 가능하게 수정
-    @BeforeEach
-    public void beforEach() {
-        memberRepository = new MemoryMemberRepository();
-        memberService = new MemberService(memberRepository);
-    }
+// 통합 테스트
 
-    @AfterEach
-    public void afterEach() {
-        memberRepository.clearStore();
-    }
+// 스프링 컨테이너와 함께 테스트를 진행한다는 어노테이션
+@SpringBootTest
+// 테스트에 Transactional이 붙으면 테스트 시작전에 트랜젝션이 시작하고 테스트가 끝난후 롤백한다.
+@Transactional
+class MemberServiceIntegrationTest {
+    // 테스트이기 때문에 필드 주입을 사용
+    @Autowired MemberService memberService;
+    @Autowired MemberRepository memberRepository;
 
     @Test
     void 회원가입() {
         // given
         Member member = new Member();
-        member.setName("boot1");
+        member.setName("boot");
 
         // when
         Long saveId = memberService.join(member);
@@ -52,15 +51,6 @@ class MemberServiceTest {
         memberService.join(member1);
         IllegalStateException e = assertThrows(IllegalStateException.class, () -> memberService.join(member2));
         assertThat(e.getMessage()).isEqualTo("이미 존재하는 회원입니다.");
-
-        /*try {
-            memberService.join(member2);
-            fail();
-        } catch (IllegalStateException e) {
-            assertThat(e.getMessage()).isEqualTo("이미 존재하는 회원입니다.");
-        }*/
-
-        //then
     }
 
     @Test
