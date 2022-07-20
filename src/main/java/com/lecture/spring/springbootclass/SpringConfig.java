@@ -1,5 +1,6 @@
 package com.lecture.spring.springbootclass;
 
+import com.lecture.spring.springbootclass.aop.TimeTraceAop;
 import com.lecture.spring.springbootclass.repository.JpaMemberRepository;
 import com.lecture.spring.springbootclass.repository.MemberRepository;
 import com.lecture.spring.springbootclass.service.MemberService;
@@ -31,6 +32,12 @@ public class SpringConfig {
     @Bean
     public MemberService memberService() {
         return new MemberService(memberRepository);
+    }
+
+    // AOP 적용을 위해 스프링 Bean에 등록
+    @Bean
+    public TimeTraceAop timeTraceAop() {
+        return new TimeTraceAop();
     }
 
     // spring data JPA 이외 사용
